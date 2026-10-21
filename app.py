@@ -404,22 +404,42 @@ elif st.session_state.screen == "game":
 
             st.rerun()
 
+    
+else:
+    st.success("제출 완료! 그림이 저장되어 잠겼습니다.")
+
+    st.image(
+        Image.open(io.BytesIO(game["drawing"])),
+        caption="제출한 그림",
+        use_container_width=True,
+    )
+
+    # AI 답변을 비어 있지 않게 표시
+    ai_answer = game.get("ai_answer", "")
+
+    if ai_answer:
+        st.subheader(f"🤖 AI의 답: {ai_answer}")
     else:
+        st.error("AI 답변이 비어 있습니다.")
+        st.write("오류 내용:", game.get("ai_error", "오류 정보 없음"))
 
-        # 제출 후에는 그림판을 렌더링하지 않습니다.
-        st.success("제출 완료! 그림이 저장되어 잠겼습니다.")
+    if game.get("ai_error"):
+        st.code(game["ai_error"])
 
-        st.image(
-            Image.open(
-                io.BytesIO(game["drawing"])
-            ),
-            caption="제출한 그림",
-            use_container_width=True,
-        )
+    button_label = (
+        "다음 문제 ➡️"
+        if game["index"] < QUESTION_COUNT - 1
+        else "🏁 결과 확인하기"
+    )
 
-        st.markdown(
-            f"### 🤖 AI의 답: {game['ai_answer']}"
-        )
+    if st.button(
+        button_label,
+        type="primary",
+        use_container_width=True,
+    ):
+        advance_question()
+        st.rerun()
+
 
         if game["ai_error"]:
             st.warning(
