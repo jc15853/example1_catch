@@ -196,7 +196,7 @@ elif st.session_state.game_state == "PLAYING":
     with tool_col2:
         stroke_width = st.slider("🖌️ 선 두께 조절", 1, 25, 5)
 
-    # 캔버스 컴포넌트
+  # 캔버스 컴포넌트
     canvas_result = st_canvas(
         fill_color="rgba(255, 255, 255, 0)",
         stroke_width=stroke_width,
@@ -213,7 +213,14 @@ elif st.session_state.game_state == "PLAYING":
     
     with btn_col1:
         if st.button("✨ 추상화 결과 제출하기", type="primary", use_container_width=True):
-            if canvas_result.image_data is not None:
-                img = Image.fromarray(canvas_result.image_data.astype('uint8'), 'RGBA')
-                # AI 채점 로직 호출
-                st.session_state.current_canvas
+            # 캔버스에 그려진 객체(objects)가 있는지 먼저 안전하게 확인
+            if canvas_result.json_data is not None and len(canvas_result.json_data.get("objects", [])) > 0:
+                try:
+                    img = Image.fromarray(canvas_result.image_data.astype('uint8'), 'RGBA')
+                    st.session_state.current_canvas_img = img
+                    st.session_state.game_state = "EVALUATING"
+                    st.rerun()
+                except Exception:
+                    st.warning("⚠️ 그림 데이터를 변환하는 중 문제가 발생했습니다. 다시 시도해 주세요.")
+            else:
+                st.warning("⚠️ 그림이 비어 있습니다! 제시어에 맞는 핵심 특징을 캔버스에 그려주세요.")
