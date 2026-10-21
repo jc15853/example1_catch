@@ -1,5 +1,6 @@
-streamlit
-streamlit-drawable-canvas
-pandas
-Pillow
-google-genai
+streamlit>=1.40.0
+streamlit-drawable-canvas==0.9.3
+streamlit-autorefresh>=1.0.1
+google-genai>=1.0.0
+Pillow>=10.0.0
+pandas>=2.0.0
