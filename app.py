@@ -84,7 +84,8 @@ if not api_key:
 @st.cache_data
 def load_keywords():
     try:
-        return pd.read_csv("keyword.csv")
+        # utf-8-sig 인코딩을 사용하여 한글 깨짐 및 BOM 오류 방지
+        return pd.read_csv("keyword.csv", encoding="utf-8-sig")
     except Exception as e:
         st.error(f"keyword.csv 파일을 읽을 수 없습니다: {e}")
         return pd.DataFrame(columns=["category", "keyword"])
