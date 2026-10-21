@@ -93,21 +93,23 @@ def guess_with_gemini(png_bytes):
     client = genai.Client(api_key=api_key)
     image = Image.open(io.BytesIO(png_bytes)).convert("RGB")
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=[
-            (
-                "그림이 무엇인지 추측하세요. "
-                "한국어 한 단어만 출력하세요. "
-                "설명이나 문장부호는 출력하지 마세요."
-            ),
-            image,
-        ],
-        config=types.GenerateContentConfig(
-            temperature=0.2,
-            max_output_tokens=20,
+    
+response = client.models.generate_content(
+    model="gemini-3.8-flash",
+    contents=[
+        (
+            "그림이 무엇인지 추측하세요. "
+            "한국어 한 단어만 출력하세요. "
+            "설명이나 문장부호는 출력하지 마세요."
         ),
-    )
+        image,
+    ],
+    config=types.GenerateContentConfig(
+        temperature=0.2,
+        max_output_tokens=20,
+    ),
+)
+
 
     answer = (response.text or "").strip()
     answer = answer.splitlines()[0].strip() if answer else "모르겠음"
